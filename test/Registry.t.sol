@@ -155,7 +155,7 @@ contract RegistryTest is Test {
     assertEq(_regOwner, _userA);
 
     vm.prank(_userA);
-    registry.transferFrom(_userA, _userB, 0);
+    registry.transferFrom(_userA, _zero, 0);
 
     bytes32 _bPrimary = registry.primaryDomain(_userB);
     assertEq(_bPrimary, _domainName1);
