@@ -48,6 +48,7 @@ contract Registrar is Ownable {
   function transfer(address _newOwner) public {
     require(msg.sender == registryContractAddr, "Caller is not Registry");
     _transferOwnership(_newOwner);
+    ownerInfo.owner = _newOwner;
   }
 
   // owner issues a new domain
