@@ -21,19 +21,15 @@ contract Registrar is Ownable {
   bytes32 public parentDomain;
   address public registryContractAddr;
 
-  event NewOwnerDescription(string indexed _oldDesc, string indexed _newDesc);
-  event NewOwnerWebsite(string indexed _oldWeb, string indexed _newWeb);
-  event NewOwnerEmail(string indexed _oldEmail, string indexed _newEmail);
-  event NewOwnerAvatar(string indexed _oldAvatar, string indexed _newAvatar);
+  event NewOwnerDescription(string _oldDesc, string _newDesc);
+  event NewOwnerWebsite(string _oldWeb, string _newWeb);
+  event NewOwnerEmail(string _oldEmail, string _newEmail);
+  event NewOwnerAvatar(string _oldAvatar, string _newAvatar);
 
-  event NewSubdomDescription(string indexed _oldDesc, string indexed _newDesc);
-  event NewSubdomTarget(address indexed _oldTarget, address indexed _newTarget);
-
-  event SubdomainTransfer(
-    bytes32 _subDomain,
-    address indexed _from,
-    address indexed _to
-  );
+  event NewSubdomain(bytes32 _name, address target);
+  event NewSubdomDescription(string _oldDesc, string _newDesc);
+  event NewSubdomTarget(address _oldTarget, address _newTarget);
+  event SubdomainTransfer(bytes32 _subDomain, address _from, address _to);
 
   Data public ownerInfo;
 
@@ -64,13 +60,14 @@ contract Registrar is Ownable {
     require(!hasSubDomain[_target], "This address already has a subdomain");
     require(validateName(_subDomain), "This is not a valid domain name!");
 
-    addToSubdomainList(_subDomain);
+    _addToSubdomainList(_subDomain);
 
     subDomainData[_subDomain].target = _target;
     subDomainData[_subDomain].description = _description;
 
     registered[_subDomain] = true;
     hasSubDomain[_target] = true;
+    emit NewSubdomain(_subDomain, _target);
   }
 
   function _addToSubdomainList(bytes32 _subdomain) internal {
@@ -85,7 +82,7 @@ contract Registrar is Ownable {
     for (uint256 i; i < subDomains.length; i++) {
       if (_subDomain == subDomains[i]) {
         _subdomIndex = i;
-        return;
+        break;
       }
     }
 
